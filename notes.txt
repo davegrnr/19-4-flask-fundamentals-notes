@@ -1,0 +1,67 @@
+__ SECTION 19.4 ____
+
+[2]
+HTTP is a “Stateless protocol” -- it remembers nothing. There is no history that it remembers. We need to save things to preserve states such as not having to log in every single time a user visits a page. 
+This is also like your ‘cart’ on a website - it will save those items even if you are not signed in. There is a state persisting between requests.
+The most optimal is using cookies and sessions
+The following videos will be very conceptual heavy - consult with mentor if it’s getting too thick
+[3] COOKIES INTRO
+Cookies are a name/string-value pair - it’s a tiny bit of information stored on the client (browser). It helps make http have “state”
+Cookie info is sent via a request header. The server can receive it and process the stateful data i.e. “respond with a logged-in page”
+The server can also tell a client to store a cookie, the browser will interpret and store it in the cookie storage (the “cookie jar”)
+[4] VIEWING COOKIES
+Can use dev tools in chrome: Dev tools > Application > Storage > Cookies
+[5] READING COOKIES
+In Flask, 2 parts to working with cookies: 1) Reading values sent from browser in request and 2) adding new cookies you will send with response.
+Use the request object imported from Flask (request.args | request.form | request.cookies)
+**Important in the video, Colt loops over cookies with request.cookies.items() because the cookies are turned into a dictionary
+[6] SETTING COOKIES
+We must set the cookie on the actual response object 
+We call render_template() but we don’t return it...we save it to a variable! I.e.    		html = render_template(“response-cookie.html”, fav_color=fav_color)
+Then we call a function called make_response(variable) and save it to a variable:			resp = make_reponse(html)
+Can call set_cookie() method so res.set_cookie(‘jolly_rancher_flavor’, ‘grape’)		This will set a cookie to be jolly_rancher_flavor=grape					SO .set_cookie(‘value’, ‘name’)
+This will tie the cookie so the client(browser) always sends it with its response
+
+BUT THERE IS AN EASIER WAY!!!!
+
+
+[7] COOKIE OPTIONS
+Every cookie has a few options we can configure:
+Expiration: How long should browser remember this? Can be set to a time “session cookie”
+Domain: Which domains should the cookie be sent to?
+HttpOnly: Cookies that are NOT accessible via javascript
+
+[8] SESSION STORAGE
+Comparisons of Browser Storage:
+LocalStorage
+Stores data with no expiration date, and gets cleared only through JavaScript, or clearing the Browser cache
+Domain specific
+Storage limit is much larger than a cookie.
+SessionStorage
+Stores data only for until the browser or tab is closed.
+Storage limit is much larger than a cookie.
+Cookie
+Cookies can be made secure by setting the httpOnly flag as true for that cookie. This prevents client-side access to that cookie
+Sent from the browser to the server for every request to the same domain
+Set usually from server-side. Can we read by a server
+SessionStorage would be useful for something like a pop up banner...if a user exes out of it, the page shouldn’t display the banner for the rest of that session. However, if the user comes back later, the page should display that banner again.
+[9] FLASK SESSIONS (different from the session storage)
+Basically an improvement upon cookies. Because:
+Cookies are just strings
+Cookies are limited by size
+Flask sessions are a “magic dictionary” where we can add information in or read information from. Think “hello, sessions, I’d like to add a key called ‘leaderboard’ and set it to this list that has 10 items in it.” 
+Contain information for the current browser.
+They preserve type (lists stay lists, dicts stay dicts, etc…)
+Are “signed” so users can’t modify data. Like a stamp of authenticity.
+Import session from flask. Set a secret_key
+Now in routes, you can treat session as a dictionary
+Flask will save the data in a signed session that looks like garbled nonsense, but we can pull information from that and flask will decipher.
+
+[10] MORE ON THE SESSION
+The data is serialized and signed and stored as a cookie in the browser
+There is still a top limit for the size of session - server side sessions are available via flaskSession
+[11] SECRET INVITE DEMO
+
+
+
+
